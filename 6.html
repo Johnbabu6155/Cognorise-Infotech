@@ -1,0 +1,148 @@
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Currency Converter</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            background-color: #f0f0f0;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            height: 100vh;
+            margin: 0;
+        }
+
+        .converter {
+            background-color: #fff;
+            width: 300px;
+            padding: 20px;
+            border-radius: 8px;
+            box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+            text-align: center;
+        }
+
+        h2 {
+            margin-bottom: 20px;
+        }
+
+        .form-group {
+            margin-bottom: 20px;
+        }
+
+        label {
+            display: block;
+            margin-bottom: 5px;
+            font-weight: bold;
+        }
+
+        input[type="number"] {
+            width: calc(100% - 12px);
+            padding: 6px;
+            font-size: 1rem;
+            border: 1px solid #ccc;
+            border-radius: 5px;
+        }
+
+        select {
+            width: 100%;
+            padding: 8px;
+            font-size: 1rem;
+            border: 1px solid #ccc;
+            border-radius: 5px;
+            appearance: none;
+        }
+
+        button {
+            padding: 10px 20px;
+            font-size: 1rem;
+            border: none;
+            background-color: #3e98c7;
+            color: white;
+            border-radius: 5px;
+            cursor: pointer;
+            transition: background-color 0.3s ease;
+        }
+
+        button:hover {
+            background-color: #1e87c7;
+        }
+
+        .result {
+            margin-top: 20px;
+            font-size: 1.2rem;
+        }
+    </style>
+</head>
+<body>
+    <div class="converter">
+        <h2>Currency Converter</h2>
+        <div class="form-group">
+            <label for="amount">Amount:</label>
+            <input type="number" id="amount" placeholder="Enter amount" min="0" step="0.01" required>
+        </div>
+        <div class="form-group">
+            <label for="from">From:</label>
+            <select id="from">
+                <option value="USD">USD</option>
+                <option value="EUR">EUR</option>
+                <option value="GBP">GBP</option>
+                <option value="JPY">JPY</option>
+                <!-- Add more options as needed -->
+            </select>
+        </div>
+        <div class="form-group">
+            <label for="to">To:</label>
+            <select id="to">
+                <option value="USD">USD</option>
+                <option value="EUR">EUR</option>
+                <option value="GBP">GBP</option>
+                <option value="JPY">JPY</option>
+                <!-- Add more options as needed -->
+            </select>
+        </div>
+        <button id="convertBtn">Convert</button>
+        <div class="result" id="result"></div>
+    </div>
+
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            const convertBtn = document.getElementById('convertBtn');
+            const amountInput = document.getElementById('amount');
+            const fromSelect = document.getElementById('from');
+            const toSelect = document.getElementById('to');
+            const resultDiv = document.getElementById('result');
+
+            const apiKey = 'YOUR_API_KEY'; // Replace with your API key
+
+            convertBtn.addEventListener('click', function() {
+                const amount = amountInput.value;
+                const fromCurrency = fromSelect.value;
+                const toCurrency = toSelect.value;
+
+                // Construct the API URL for fetching exchange rates
+                const apiUrl = https://v6.exchangerate-api.com/v6/${apiKey}/latest/${fromCurrency};
+
+                fetch(apiUrl)
+                    .then(response => response.json())
+                    .then(data => {
+                        if (data.conversion_rates) {
+                            const exchangeRate = data.conversion_rates[toCurrency];
+                            const convertedAmount = amount * exchangeRate;
+                            resultDiv.textContent = ${amount} ${fromCurrency} = ${convertedAmount.toFixed(2)} ${toCurrency};
+                        } else {
+                            resultDiv.textContent = 'Unable to fetch exchange rates. Please try again later.';
+                        }
+                    })
+                    .catch(error => {
+                        console.error('Error fetching data:', error);
+                        resultDiv.textContent = 'Error fetching data. Please try again later.';
+                    });
+            });
+        });
+    </script>
+</body>
+</html>

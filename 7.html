@@ -1,0 +1,168 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Simple Calculator</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            background-color: #f0f0f0;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            height: 100vh;
+            margin: 0;
+        }
+
+        .calculator {
+            width: 300px;
+            background-color: #fff;
+            border: 1px solid #ccc;
+            border-radius: 8px;
+            box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+            padding: 20px;
+            box-sizing: border-box;
+        }
+
+        .calculator-screen {
+            width: 100%;
+            height: 60px;
+            font-size: 2rem;
+            text-align: right;
+            border: none;
+            background-color: #f5f5f5;
+            margin-bottom: 10px;
+            padding: 0 20px;
+            border-radius: 5px;
+        }
+
+        .calculator-keys {
+            display: grid;
+            grid-template-columns: repeat(4, 1fr);
+            gap: 10px;
+        }
+
+        .calculator-keys button {
+            padding: 20px;
+            font-size: 1.5rem;
+            text-align: center;
+            cursor: pointer;
+            border: none;
+            background-color: #e0e0e0;
+            border-radius: 5px;
+            transition: background-color 0.3s ease;
+        }
+
+        .calculator-keys button:hover {
+            background-color: #ccc;
+        }
+
+        .operator {
+            background-color: #f5923e;
+            color: white;
+        }
+
+        .operator:hover {
+            background-color: #f17200;
+        }
+
+        .equal-sign {
+            background-color: #3e98c7;
+            color: white;
+        }
+
+        .equal-sign:hover {
+            background-color: #1e87c7;
+        }
+    </style>
+</head>
+<body>
+    <div class="calculator">
+        <input type="text" id="screen" class="calculator-screen" value="0" disabled>
+        <div class="calculator-keys">
+            <button class="operator" value="+">+</button>
+            <button class="operator" value="-">-</button>
+            <button class="operator" value="*">&times;</button>
+            <button class="operator" value="/">&divide;</button>
+            <button value="7">7</button>
+            <button value="8">8</button>
+            <button value="9">9</button>
+            <button class="operator" value="=" class="equal-sign">=</button>
+            <button value="4">4</button>
+            <button value="5">5</button>
+            <button value="6">6</button>
+            <button value="0">0</button>
+            <button value="1">1</button>
+            <button value="2">2</button>
+            <button value="3">3</button>
+            <button>.</button>
+            <button id="clear">C</button>
+        </div>
+    </div>
+
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            const screen = document.getElementById('screen');
+            const buttons = document.querySelectorAll('button');
+            let currentInput = '0';
+            let calculationOperator = '';
+            let firstOperand = '';
+
+            buttons.forEach(button => {
+                button.addEventListener('click', function(event) {
+                    const buttonValue = event.target.value;
+
+                    if (buttonValue === '.') {
+                        if (currentInput.includes('.')) return;
+                        currentInput += buttonValue;
+                    } else if (!isNaN(buttonValue)) {
+                        if (currentInput === '0') {
+                            currentInput = buttonValue;
+                        } else {
+                            currentInput += buttonValue;
+                        }
+                    } else if (buttonValue === '+' || buttonValue === '-' || buttonValue === '*' || buttonValue === '/') {
+                        calculationOperator = buttonValue;
+                        firstOperand = currentInput;
+                        currentInput = '0';
+                    } else if (buttonValue === '=') {
+                        if (!calculationOperator || !firstOperand) return;
+                        currentInput = calculate(firstOperand, calculationOperator, currentInput);
+                        calculationOperator = '';
+                        firstOperand = '';
+                    } else if (buttonValue === 'C') {
+                        currentInput = '0';
+                        calculationOperator = '';
+                        firstOperand = '';
+                    }
+
+                    screen.value = currentInput;
+                });
+            });
+
+            function calculate(firstOperand, operator, secondOperand) {
+                firstOperand = parseFloat(firstOperand);
+                secondOperand = parseFloat(secondOperand);
+
+                switch (operator) {
+                    case '+':
+                        return (firstOperand + secondOperand).toString();
+                    case '-':
+                        return (firstOperand - secondOperand).toString();
+                    case '*':
+                        return (firstOperand * secondOperand).toString();
+                    case '/':
+                        if (secondOperand === 0) {
+                            return 'Error';
+                        } else {
+                            return (firstOperand / secondOperand).toString();
+                        }
+                    default:
+                        return 'Error';
+                }
+            }
+        });
+    </script>
+</body>
+</html>
